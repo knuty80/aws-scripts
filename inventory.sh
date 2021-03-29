@@ -8,11 +8,11 @@ set -o pipefail
 
 csvFile='inventory-report.csv'
 
+## Set CSV columns
+echo "Region,Availability Zone,Instance,State,Public DNS Name,Private DNS Name,Security Groups,Launch Time" > ${csvFile}
 ## Loop through regions
 for region in $(aws ec2 describe-regions --query 'Regions[].RegionName' --output text)
 do
-  ## Set CSV columns
-  echo "Region,Availability Zone,Instance,State,Public DNS Name,Private DNS Name,Security Groups,Launch Time" > ${csvFile}
   ## Loop through instances per region
   for instance in $(aws ec2 describe-instances --region ${region} --query 'Reservations[].Instances[].InstanceId' --output text)
   do
@@ -23,6 +23,8 @@ do
     az=$(aws ec2 describe-instances --region ${region} --instance-ids ${instance} --query 'Reservations[].Instances[].Placement[].AvailabilityZone' --output text)
     sg=$(aws ec2 describe-instances --region ${region} --instance-ids ${instance} --query 'Reservations[].Instances[].SecurityGroups[].GroupId' --output text)
     launchTime=$(aws ec2 describe-instances --region ${region} --instance-ids ${instance} --query 'Reservations[].Instances[].LaunchTime' --output text)
+    [ -n ${publicDnsName} ] && address="${publicDnsName}" || [ -n ${privateDnsName} ] && address="${privateDnsName}"
+    os="ssh ${address} "hostnamectl"
     ## Create entry in CSV for each instance
     echo "${region},${az},${instance},${state},${publicDnsName},${privateDnsName},$(echo ${sg}),${launchTime}" >> ${csvFile}
   done
