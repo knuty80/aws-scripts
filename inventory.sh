@@ -15,8 +15,7 @@ date=$(echo "$(date +%Y-%m-%d) $(date +%H:%M:%S%Z)")
 ## Set CSV columns
 echo 'Region/AZ,Instance,State,Public DNS Name,Private DNS Name,Security Groups,Launch Time,Operating System' > ${csvFile}
 ## Loop through regions
-#for region in $(aws ec2 describe-regions --query 'Regions[].RegionName' --output text)
-for region in us-west-2
+for region in $(aws ec2 describe-regions --query 'Regions[].RegionName' --output text)
 do
   ## Loop through instances per region
   numberOfInstances=$(aws ec2 describe-instances --query 'Reservations[].Instances[].InstanceId' --output yaml | wc -l)
