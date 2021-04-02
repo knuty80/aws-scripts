@@ -34,11 +34,6 @@ do
       az=$(aws ec2 describe-instances --region ${region} --instance-ids ${instance} --query 'Reservations[].Instances[].Placement[].AvailabilityZone' --output text)
       sg=$(aws ec2 describe-instances --region ${region} --instance-ids ${instance} --query 'Reservations[].Instances[].SecurityGroups[].GroupId' --output text)
       launchTime=$(aws ec2 describe-instances --region ${region} --instance-ids ${instance} --query 'Reservations[].Instances[].LaunchTime' --output text)
-      ## WIP - SSH to host and get more info - WIP
-      #[ -n ${publicDnsName} ] && dnsAddress="${publicDnsName}" || dnsAddress="${privateDnsName}"
-      #curl -v http://${dnsAddress}:22; [ $? -eq 56 ] && sshAddress="${publicDnsName}"
-      #[ -n ${sshAddress} ] && os="$(ssh ${sshAddress} hostnamectl | grep 'Operating System' | awk -F ': ' '{print $NF}')"
-      ## Create entry in CSV for each instance
       echo "${accountId},${az},${instance},${state},${publicDnsName},${privateDnsName},$(echo ${sg}),${launchTime},${osDesc}" >> ${csvFile}
       #sleep 30
     done
