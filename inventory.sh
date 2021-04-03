@@ -10,7 +10,6 @@ set -o pipefail
 #set -o errexit
 
 csvFile="inventory-report-$(date +%Y-%m-%d).csv"
-date=$(echo "$(date +%Y-%m-%d) $(date +%H:%M:%S%Z)")
 
 ## Set CSV columns
 echo 'Account,Region/AZ,Instance,State,Public DNS Name,Private DNS Name,Security Groups,Launch Time,Operating System' > ${csvFile}
@@ -20,10 +19,10 @@ do
   ## Loop through instances per region
   numberOfInstances=$(aws ec2 describe-instances --region ${region} --query 'Reservations[].Instances[].InstanceId' --output text | wc -w)
   if [ "${numberOfInstances}" -gt "0" ]; then
-    echo "${date} WARN: Running against $(echo ${numberOfInstances}) instances in ${region}..."
+    echo "$(echo "$(date +%Y-%m-%d) $(date +%H:%M:%S%Z)") WARN: Running against $(echo ${numberOfInstances}) instances in ${region}..."
     for instance in $(aws ec2 describe-instances --region ${region} --query 'Reservations[].Instances[].InstanceId' --output text)
     do
-      echo "${date} INFO: Getting info on ${instance}"
+      echo "$(echo "$(date +%Y-%m-%d) $(date +%H:%M:%S%Z)") INFO: Getting info on ${instance}"
       ## Put inventory values into variables that we can write to the CSV with
       accountId=$(aws ec2 describe-instances --region ${region} --instance-ids ${instance} --query 'Reservations[].OwnerId' --output text)
       amiId=$(aws ec2 describe-instances --region ${region} --instance-ids ${instance} --query 'Reservations[].Instances[].ImageId' --output text)
@@ -39,5 +38,5 @@ do
     done
   fi
 done
-echo "${date} INFO: Report complete! Output file:$(pwd)/${csvFile}"
+echo "$(echo "$(date +%Y-%m-%d) $(date +%H:%M:%S%Z)") INFO: Report complete! Output file:$(pwd)/${csvFile}"
 

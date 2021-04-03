@@ -10,6 +10,6 @@
 for region in $(aws ec2 describe-regions --query 'Regions[].RegionName' --output text)
 do
   aws ec2 enable-ebs-encryption-by-default --region ${region} | grep "true" > /dev/null 2>&1
-  [ $? -eq "0" ] && echo "$(echo $(date +%Y-%m-%d) $(date +%H:%M:%S%Z)) INFO EBS encryption enabled by default in ${region}"
+  [ $? -eq "0" ] && echo "$(echo $(date +%Y-%m-%d) $(date +%H:%M:%S%Z)) INFO: EBS encryption enabled by default in ${region}"
 done
 
