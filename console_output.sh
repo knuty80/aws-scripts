@@ -16,8 +16,8 @@ instance_id=${1}
 [ -z ${instance_id} ] && read -p 'Instance ID: ' instance_id
 if [ -z ${instance_id} ]; then
     echo "An "Instance ID" must be set"
-		echo "You can pass the instance ID as arg1 and the region as arg2"
-		echo "Example: bash console_output.sh i-123456789 us-west-2"
+    echo "You can pass the instance ID as arg1 and the region as arg2"
+    echo "Example: bash console_output.sh i-123456789 us-west-2"
     exit 1
 fi
 
